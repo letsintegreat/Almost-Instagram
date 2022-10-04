@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagram/api/client.dart';
 import 'package:instagram/utils/api.dart';
 
 class HomeNewpostTab extends StatefulWidget {
@@ -18,11 +19,6 @@ class _HomeNewpostTabState extends State<HomeNewpostTab> {
   final TextEditingController _caption = TextEditingController();
   bool _imageSelected = false;
 
-  Client? client;
-  Account? account;
-  Storage? storage;
-  Databases? databases;
-
   void createNewPost(BuildContext context) {
     // Check if user has not selected an image yet.
     if (!_imageSelected) {
@@ -37,7 +33,7 @@ class _HomeNewpostTabState extends State<HomeNewpostTab> {
     }
 
     // Create a new document in our posts collection.
-    Future result = databases!.createDocument(
+    Future result = ApiClient.databases.createDocument(
         databaseId: ApiInfo.databaseId,
         collectionId: ApiInfo.collectionId,
         documentId: "unique()",
@@ -68,7 +64,7 @@ class _HomeNewpostTabState extends State<HomeNewpostTab> {
     try {
 
       // Upload the image file to appwrite storage.
-      Future result = storage!.createFile(
+      Future result = ApiClient.storage.createFile(
         bucketId: ApiInfo.bucketId,
         fileId: "unique()",
         file: InputFile(path: image!.path, filename: image.name),
@@ -92,15 +88,8 @@ class _HomeNewpostTabState extends State<HomeNewpostTab> {
   @override
   void initState() {
     super.initState();
-    client = Client()
-        .setEndpoint(ApiInfo.url)
-        .setProject(ApiInfo.projectId)
-        .setSelfSigned(status: true);
-    account = Account(client!);
-    storage = Storage(client!);
-    databases = Databases(client!);
 
-    Future result = account!.get();
+    Future result = ApiClient.account.get();
     result.then((response) {
       setState(() {
         _username = response.name;
@@ -173,7 +162,7 @@ class _HomeNewpostTabState extends State<HomeNewpostTab> {
           ),
           (_imageSelected)
               ? FutureBuilder(
-                  future: storage!.getFileDownload(
+                  future: ApiClient.storage.getFileDownload(
                       bucketId: ApiInfo.bucketId, fileId: _imageId),
                   builder: (context, snapshot) {
                     return snapshot.hasData && snapshot.data != null

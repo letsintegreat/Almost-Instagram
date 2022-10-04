@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/api/client.dart';
 import 'package:instagram/screens/launch.dart';
 import 'package:instagram/utils/api.dart';
 
@@ -15,13 +16,10 @@ class HomeProfileTab extends StatefulWidget {
 class _HomeProfileTabState extends State<HomeProfileTab> {
   String _username = "";
 
-  Client? client;
-  Account? account;
-
   void logout(BuildContext context) {
 
     // Delete the current session.
-    Future result = account!.deleteSession(
+    Future result = ApiClient.account.deleteSession(
       sessionId: 'current',
     );
 
@@ -43,13 +41,7 @@ class _HomeProfileTabState extends State<HomeProfileTab> {
   @override
   void initState() {
     super.initState();
-    client = Client()
-        .setEndpoint(ApiInfo.url)
-        .setProject(ApiInfo.projectId)
-        .setSelfSigned(status: true);
-
-    account = Account(client!);
-    Future result = account!.get();
+    Future result = ApiClient.account.get();
     result.then((response) {
       setState(() {
         _username = response.name;

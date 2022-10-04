@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/api/client.dart';
 import 'package:instagram/screens/home.dart';
 import 'package:instagram/utils/api.dart';
 
@@ -14,12 +15,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
 
-  Client? client;
-  Account? account;
-
   void login(BuildContext context) {
     // Attempt to login with email and password
-    Future result = account!.createEmailSession(
+    Future result = ApiClient.account.createEmailSession(
       email: _email.text,
       password: _password.text,
     );
@@ -34,16 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
       // Failure
       print(error.response);
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    client = Client()
-        .setEndpoint(ApiInfo.url)
-        .setProject(ApiInfo.projectId)
-        .setSelfSigned(status: true);
-    account = Account(client!);
   }
 
   @override

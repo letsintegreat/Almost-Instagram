@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/api/client.dart';
 import 'package:instagram/models/post_model.dart';
 import 'package:instagram/utils/api.dart';
 import 'package:instagram/widgets/post.dart';
@@ -15,10 +16,6 @@ class HomeHomeTab extends StatefulWidget {
 class _HomeHomeTab extends State<HomeHomeTab> {
   String _username = "";
 
-  Client? client;
-  Databases? databases;
-  Account? account;
-  Realtime? realtime;
   var subscription;
 
   List<Post> _posts = [
@@ -54,7 +51,7 @@ class _HomeHomeTab extends State<HomeHomeTab> {
     _posts = [];
 
     // Get the list of documents (posts).
-    Future result = databases!.listDocuments(
+    Future result = ApiClient.databases.listDocuments(
       databaseId: ApiInfo.databaseId,
       collectionId: ApiInfo.collectionId,
     );
@@ -86,17 +83,9 @@ class _HomeHomeTab extends State<HomeHomeTab> {
   @override
   void initState() {
     super.initState();
-    
-    client = Client()
-        .setEndpoint(ApiInfo.url)
-        .setProject(ApiInfo.projectId)
-        .setSelfSigned(status: true);
-    account = Account(client!);
-    realtime = Realtime(client!);
-    databases = Databases(client!);
 
     // Get the currently logged in account.
-    Future result = account!.get();
+    Future result = ApiClient.account.get();
 
     result.then((response) {
       // Success
@@ -111,7 +100,7 @@ class _HomeHomeTab extends State<HomeHomeTab> {
     });
 
     // Subscribe to changes in posts.
-    subscription = realtime!.subscribe([
+    subscription = ApiClient.realtime.subscribe([
       'databases.${ApiInfo.databaseId}.collections.${ApiInfo.collectionId}.documents'
     ]);
 

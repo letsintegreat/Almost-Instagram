@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/api/client.dart';
 import 'package:instagram/screens/home.dart';
 
 import '../utils/api.dart';
@@ -19,13 +20,10 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _confirm = TextEditingController();
   final TextEditingController _email = TextEditingController();
 
-  Client? client;
-  Account? account;
-
   Future<void> signup(BuildContext context) async {
     // Attempt to create an account.
     try {
-      var result = await account!.create(
+      var result = await ApiClient.account.create(
           userId: ID.unique(),
           email: _email.text,
           password: _password.text,
@@ -50,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void login(BuildContext context) {
     // Attempt to login with email and password
-    Future result = account!.createEmailSession(
+    Future result = ApiClient.account.createEmailSession(
       email: _email.text,
       password: _password.text,
     );
@@ -65,16 +63,6 @@ class _SignupScreenState extends State<SignupScreen> {
       // Failure
       print(error.response);
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    client = Client()
-        .setEndpoint(ApiInfo.url)
-        .setProject(ApiInfo.projectId)
-        .setSelfSigned(status: true);
-    account = Account(client!);
   }
 
   @override

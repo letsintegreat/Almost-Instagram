@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/api/client.dart';
 import 'package:instagram/screens/home.dart';
 import 'package:instagram/screens/login.dart';
 import 'package:instagram/screens/signup.dart';
@@ -13,14 +14,7 @@ class LaunchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Check if the user is logged in.
     try {
-      Client client = Client()
-          .setEndpoint(ApiInfo.url)
-          .setProject(ApiInfo.projectId)
-          .setSelfSigned(status: true);
-
-      Account account = Account(client);
-      Future result = account.get();
-
+      Future result = ApiClient.account.get();
       result.then((response) {
         // Logged in user
         Navigator.of(_context).pushReplacement(

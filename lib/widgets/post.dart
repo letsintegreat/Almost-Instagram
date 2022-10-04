@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/api/client.dart';
 import 'package:instagram/utils/api.dart';
 
 import '../models/post_model.dart';
@@ -17,11 +18,6 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Client client = Client()
-        .setEndpoint(ApiInfo.url)
-        .setProject(ApiInfo.projectId)
-        .setSelfSigned(status: true);
-    Storage storage = Storage(client);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -62,7 +58,7 @@ class PostWidget extends StatelessWidget {
                 likePost(context, id);
               },
               child: FutureBuilder(
-                  future: storage.getFileDownload(
+                  future: ApiClient.storage.getFileDownload(
                       bucketId: ApiInfo.bucketId, fileId: post.post),
                   builder: (context, snapshot) {
                     return snapshot.hasData && snapshot.data != null
