@@ -69,8 +69,6 @@ Once the Docker installation completes, go to <http://localhost> to access the A
 
 For advanced production and custom installation, check out our Docker [environment variables](docs/tutorials/environment-variables.md) docs. You can also use our public [docker-compose.yml](https://appwrite.io/docker-compose.yml) file to manually set up and environment.
 
-## Setting up appwrite project
-
 ### Flutter
 
 To build and run this project:
@@ -83,36 +81,123 @@ To build and run this project:
 
 (Please note that a Mac with XCode is required to build for iOS)
 
-### Appwrite
+## Setting up appwrite project
 
-To setup your Appwrite project:
+We are going to use Appwrite CLI to init the project on appwrite console.
 
-1. Open your browser and go to your <http://localhost>
-2. Create your account and login.
-3. Click on `Create Project`.
-4. Enter a Name and custom Project ID for your project and click create.
+## Install Appwrite CLI
 
-At this moment your Dashboard is ready to use.
+The CLI is packaged both as an [npm module](https://www.npmjs.com/package/appwrite-cli) as well as a [standalone binary](https://github.com/appwrite/sdk-for-cli/releases/latest) for your operating system, making it completely dependency free, platform independent and language agnostic.
 
-### Setup Project Dashboard
+## Install with NPM
 
-We need to setup some collections and need to define its attributes so our app will be ready to use.
+If you have npm set up, run the command below to install the CLI
 
-Firstly, in your appwrite console, head to Database tab. Click on Add Database, give it any name. After that add a new collection, this collection will store all the posts. Now, inside this collection, open Attributes tab. Add three string type required attributes with names: **username**, **caption**, **imageId**.
+```bash
+npm install -g appwrite-cli
+```
 
-Secondly, head to Storage tab. Click on Add Bucket. This will store the images uploaded by users.
+## Install with Script
 
-Now the setup on console is completed, and you need to make some changes in `lib/utils/api.dart`:
+For a completely dependency-free installation, the CLI also ships with a convenient installation script for your operating system
 
-- **url**: This is the endpoint URL. If you are testing the app on an android studio emulator and appwrite is configured on localhost, then you don't need to change it. Otherwise, you will need to change the hostname to the URL that you set while initiating appwrite.
+## MacOS
 
-- **projectID**: can be found in project settings, in appwrite console.
+Using [Homebrew](https://brew.sh/)
 
-- **databaseId**: can be found in collection settings, inside database tab, in appwrite console.
+```bash
+brew tap appwrite/sdk-for-cli https://github.com/appwrite/sdk-for-cli
+brew update
+brew install --HEAD appwrite
+```
 
-- **collectionId**: can be found in collection settings, inside database tab, in appwrite console.
+or terminal
 
-- **bucketId**: can be found bucket settings, inside storage tab, in appwrite console.
+```bash
+curl -sL https://appwrite.io/cli/install.sh | bash
+```
+
+## Windows
+
+```powershell
+iwr -useb https://appwrite.io/cli/install.ps1 | iex
+```
+
+## Linux
+
+```bash
+curl -sL https://appwrite.io/cli/install.sh | bash
+```
+
+After the installation is complete, verify the install using
+
+```cli
+appwrite -v
+```
+
+## Setup the project using Appwrite CLI
+
+Before you can use the CLI, you need to login to your Appwrite account using
+
+```cli
+appwrite login
+```
+
+After you're logged in, the CLI needs to be initialized with your Appwrite project. You can initialize the CLI using:
+
+```cli
+appwrite init project
+```
+
+Choose `Create a new Appwrite project` and the following prompts will guide you through the setup process, enter `almostinstagram` as the ID for your new project. The init command also creates an **appwrite.json** file representing your Appwrite project.
+
+Create a new database
+
+```cli
+appwrite databases create --databaseId postdatabase --name posts
+```
+
+Create a new collection
+
+```cli
+appwrite databases createCollection --databaseId postdatabase --collectionId postcollection --name posts --permissions 'read(\"any\")' 'write(\"any\")'
+```
+
+Create `username` attribute
+
+```cli
+appwrite databases createStringAttribute --databaseId postdatabase --collectionId postcollection --key username --size 255 --required true
+```
+
+Create `caption` attribute
+
+```cli
+appwrite databases createStringAttribute --databaseId postdatabase --collectionId postcollection --key caption --size 255 --required true
+```
+
+Create `imageId` attribute
+
+```cli
+appwrite databases createStringAttribute --databaseId postdatabase --collectionId postcollection --key imageId --size 255 --required true
+```
+
+Create a bucket to store post images
+
+```cli
+appwrite storage createBucket --bucketId imagesbucket --name images --permissions 'read(\"any\")' 'write(\"any\")'
+```
+
+## `lib/utils/api.dart`
+
+You may need to make some changes in `lib/utils/api.dart`:
+
+**url**: This is the endpoint URL. If you are testing the app on an android studio emulator and appwrite is configured on localhost, then you don't need to change it. Otherwise, you will need to change the hostname to the URL that you set while initiating appwrite.
+
+Rest of the `api.dart` should be left as it is.
+
+## Register the client on your dashboard
+
+Finally, you need to register the flutter app. On appwrite console (http://localhost), choose this project, then under "Platforms" head, choose "Add Platform", choose "New Flutter App", and add the required information for all the platforms you are going to run the app.
 
 **Now your Project is ready to run.**
 

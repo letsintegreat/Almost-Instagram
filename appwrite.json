@@ -1,0 +1,51 @@
+{
+    "projectId": "almostinstagram",
+    "projectName": "Instagram",
+    "collections": [
+        {
+            "$id": "postcollection",
+            "$createdAt": "2022-10-19T19:28:06.772+00:00",
+            "$updatedAt": "2022-10-19T19:28:06.772+00:00",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"any\")",
+                "update(\"any\")",
+                "delete(\"any\")"
+            ],
+            "databaseId": "postdatabase",
+            "name": "posts",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "username",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "caption",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "imageId",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                }
+            ],
+            "indexes": []
+        }
+    ]
+}
